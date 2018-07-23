@@ -143,16 +143,25 @@ function loginRegister(ID, PW, Session, callback) {
 }
 
 
+
 io.on('connection', (client) => {
   console.log('client is online');
   client.on('register', handleRegister);
   client.on('CanIAccess', handleAccessTry);
   client.on('join', handleJoin);
-  client.on('CreateChatRoom', handleCreateChatRoom);
+  //client.on('CreateChatRoom', handleCreateChatRoom);
   client.on('login', loginRegister);
   // client.on('leave', handleLeave);
-
-  // client.on('message', handleMessage);
+  // For Frontend!
+  // If you want to get message, you have to make function like this!
+  //
+  // socket.on('updatechat', function( username, data){
+  //      (conversion function).append(' username : ' + data ) });
+  //
+  socket.on('sendChat', function(data){
+    io.sockets.in(socket.room).emit('updatechat', socket.userName, data);
+  });
+  client.on('message', handleMessage);
 
   client.on('chatrooms', handleGetChatrooms);
 
